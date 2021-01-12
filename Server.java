@@ -76,33 +76,36 @@ class ClientHandler implements Runnable {
         String received;
         while (true){ 
 			// receive the string 
-			received = dis.readUTF(); 
-			
-			//logs out client
-			if(received.equals("logout")){ 
-				this.isloggedin=false;
-				try { 
-					dos.writeUTF("!&&closing**!"); 
-				} catch (IOException e) { 
-					e.printStackTrace(); 
-				}
-				System.out.println(name + " has left");
-				writeAll(this.name + " has left");
+			try{
+				received = dis.readUTF(); 
 				
-				Server.ar.remove(this);
-				this.s.close(); 
-				break; 
+				//logs out client
+				if(received.equals("logout")){ 
+					this.isloggedin=false;
+					try { 
+						dos.writeUTF("!&&closing**!"); 
+					} catch (IOException e) { 
+						e.printStackTrace(); 
+					}
+					System.out.println(name + " has left");
+					writeAll(this.name + " has left");
+					
+					Server.ar.remove(this);
+					this.s.close(); 
+					break; 
+				}
+				
+				if(received.startsWith("!name ")){
+					String newUsername = received.substring(6);
+					writeAll(this.name + " changed their name to " + newUsername);
+					this.name = newUsername;
+				}
+				  
+				//send message to all clients
+				writeAll(this.name + ": " + received);
+			} catch(IOException e) { 
+				e.printStackTrace(); 
 			}
-			
-			if(received.startsWith("!name ")){
-				String newUsername = received.substring(6);
-				writeAll(this.name + " changed their name to " + newUsername);
-				this.name = newUsername;
-			}
-			  
-			//send message to all clients
-			writeAll(this.name + ": " + received);
-			
         } 
         try{ 
             // closing resources 
