@@ -92,6 +92,7 @@ class ClientHandler implements Runnable {
 					
 					Server.ar.remove(this);
 					this.s.close(); 
+					
 					break; 
 				}
 				
@@ -99,6 +100,8 @@ class ClientHandler implements Runnable {
 					String newUsername = received.substring(6);
 					writeAll(this.name + " changed their name to " + newUsername);
 					this.name = newUsername;
+					
+					break;
 				}
 				  
 				//send message to all clients
