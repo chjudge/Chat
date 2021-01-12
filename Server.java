@@ -71,61 +71,38 @@ class ClientHandler implements Runnable {
   
     @Override
     public void run() { 
-		try{
-			for (ClientHandler mc : Server.ar)
-				mc.dos.writeUTF(this.name + " has joined");
-		} catch (IOException e) { 
-                e.printStackTrace(); 
-            } 
+		writeAll(this.name + " has joined");
+		
         String received;
         while (true){ 
-            try{ 
-                // receive the string 
-                received = dis.readUTF(); 
-                
-				//logs out client
-                if(received.equals("logout")){ 
-                    this.isloggedin=false;
-					try { 
-						dos.writeUTF("!&&closing**!"); 
-					} catch (IOException e) { 
-						e.printStackTrace(); 
-					}
-					System.out.println(name + " has left");
-					for (ClientHandler mc : Server.ar) {
-						mc.dos.writeUTF(this.name + " has joined");
-					}
-					Server.ar.remove(this);
-                    this.s.close(); 
-                    break; 
-                }
-				
-				if(received.startsWith("!name "){
-					newUsername = received.substring(6);
-					mc.dos.writeUTF(this.name + " changed their name to " + newUsername);
-					this.name = newUsername;
+			// receive the string 
+			received = dis.readUTF(); 
+			
+			//logs out client
+			if(received.equals("logout")){ 
+				this.isloggedin=false;
+				try { 
+					dos.writeUTF("!&&closing**!"); 
+				} catch (IOException e) { 
+					e.printStackTrace(); 
 				}
-                  
-				//send message to all clients
-				for (ClientHandler mc : Server.ar) {
-						mc.dos.writeUTF(this.name + ": " + received);
-				}
+				System.out.println(name + " has left");
+				writeAll(this.name + " has left");
 				
-                // search for the recipient in the connected devices list. 
-                // ar is the vector storing client of active users 
-//                
-//				for (ClientHandler mc : Server.ar){ 
-					// if the recipient is found, write on its 
-					// output stream 
-//					if ((mc.name.equals(recipient)) && mc.isloggedin==true){ 
-//						mc.dos.writeUTF(this.name+" : "+MsgToSend);
-//					} 
-//				}
-				
-            } catch (IOException e) { 
-                e.printStackTrace(); 
-            } 
-              
+				Server.ar.remove(this);
+				this.s.close(); 
+				break; 
+			}
+			
+			if(received.startsWith("!name ")){
+				String newUsername = received.substring(6);
+				writeAll(this.name + " changed their name to " + newUsername);
+				this.name = newUsername;
+			}
+			  
+			//send message to all clients
+			writeAll(this.name + ": " + received);
+			
         } 
         try{ 
             // closing resources 
@@ -136,4 +113,13 @@ class ClientHandler implements Runnable {
             e.printStackTrace(); 
         } 
     } 
+	
+	private void writeAll(String msg){
+		try{
+			for (ClientHandler mc : Server.ar)
+				mc.dos.writeUTF(msg);
+		} catch (IOException e) { 
+                e.printStackTrace(); 
+            } 
+	}
 } 
