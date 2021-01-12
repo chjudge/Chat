@@ -7,7 +7,7 @@ import javax.swing.*;
   
 public class Client{ 
     private final static int ServerPort = 1234;
-	private final static String IPAddress = "192.168.1.252";
+	private final static String IPAddress = "18.217.206.33";//EC2 IPAddress
 	protected static boolean isLoggedIn;
 	protected static DataInputStream dis; 
     protected static DataOutputStream dos;

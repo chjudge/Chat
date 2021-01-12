@@ -98,7 +98,13 @@ class ClientHandler implements Runnable {
 					Server.ar.remove(this);
                     this.s.close(); 
                     break; 
-                } 
+                }
+				
+				if(received.startsWith("!name "){
+					newUsername = received.substring(6);
+					mc.dos.writeUTF(this.name + " changed their name to " + newUsername);
+					this.name = newUsername;
+				}
                   
 				//send message to all clients
 				for (ClientHandler mc : Server.ar) {
