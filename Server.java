@@ -71,9 +71,12 @@ class ClientHandler implements Runnable {
   
     @Override
     public void run() { 
-		for (ClientHandler mc : Server.ar) {
-			mc.dos.writeUTF(this.name + " has joined");
-		}
+		try{
+			for (ClientHandler mc : Server.ar)
+				mc.dos.writeUTF(this.name + " has joined");
+		} catch (IOException e) { 
+                e.printStackTrace(); 
+            } 
         String received;
         while (true){ 
             try{ 
